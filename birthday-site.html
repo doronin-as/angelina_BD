@@ -424,7 +424,7 @@
         <header>
             <h1>С Днём Рождения, сестренка!</h1>
             <div class="subtitle">Поздравляем с твоим особенным днём!</div>
-            <div class="photo"><img src="IMG_20210828_185222.jpg" alt="Фото Ангелины"/></div>
+            <div class="photo"><img src="IMG_20210829_173618.jpg" alt="Фото Ангелины"/></div>
         </header>
         
         <div class="gift-box" id="gift-box">
@@ -541,6 +541,17 @@
     </div>
     
     <script>
+        // Загрузка страницы
+        document.addEventListener("DOMContentLoaded", function() {
+            // Инициализация всех компонентов страницы
+            setupMemoryGame();
+            setupWishWheel();
+            setupAgeTimer();
+            
+            // Автоматический запуск конфетти при загрузке
+            setTimeout(createConfetti, 1000);
+        });
+        
         // Функции для модального окна с увеличенными фотографиями
         function openModal(imgSrc) {
             const modal = document.getElementById('imageModal');
@@ -612,17 +623,14 @@
             } else {
                 // Попытка воспроизведения после взаимодействия
                 backgroundMusic.volume = 0.5; // Уменьшаем громкость до половины
-                backgroundMusic.play()
-                    .then(() => {
-                        console.log('Музыка воспроизводится!');
-                        musicControl.textContent = '🔇';
-                        musicControl.style.backgroundColor = '#4caf50';
-                        isMusicPlaying = true;
-                    })
-                    .catch(e => {
-                        console.error('Ошибка воспроизведения:', e);
-                        alert('Не удалось включить музыку. Пожалуйста, повторите попытку.');
-                    });
+                try {
+                    backgroundMusic.play();
+                    musicControl.textContent = '🔇';
+                    musicControl.style.backgroundColor = '#4caf50';
+                    isMusicPlaying = true;
+                } catch (e) {
+                    alert('Не удалось включить музыку. Пожалуйста, повторите попытку.');
+                }
             }
         });
         
@@ -698,29 +706,3 @@
                 card.style.justifyContent = 'center';
                 card.style.fontSize = '2rem';
                 card.style.fontWeight = 'bold';
-                card.style.cursor = 'pointer';
-                card.style.perspective = '1000px';
-                card.style.position = 'relative';
-                
-                const inner = card.querySelector('.memory-card-inner');
-                inner.style.position = 'relative';
-                inner.style.width = '100%';
-                inner.style.height = '100%';
-                inner.style.transition = 'transform 0.6s';
-                inner.style.transformStyle = 'preserve-3d';
-                
-                const front = card.querySelector('.memory-card-front');
-                front.style.position = 'absolute';
-                front.style.width = '100%';
-                front.style.height = '100%';
-                front.style.backfaceVisibility = 'hidden';
-                front.style.display = 'flex';
-                front.style.alignItems = 'center';
-                front.style.justifyContent = 'center';
-                front.style.color = '#e91e63';
-                
-                const back = card.querySelector('.memory-card-back');
-                back.style.position = 'absolute';
-                back.style.width = '100%';
-                back.style.height = '100%';
-                back.style.backfaceVisibility = '
