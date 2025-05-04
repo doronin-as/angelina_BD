@@ -60,14 +60,12 @@
             position: relative;
         }
         
-        /* Улучшенные стили для изображения в .photo */
+        /* Исправленные стили для изображения в .photo */
         .photo img {
             width: 100%;
-            height: auto;
-            display: block;
-            position: relative;
-            top: 15px; /* Сдвигаем изображение вниз, чтобы лицо было видно */
-            transform: scale(1.2); /* Немного увеличиваем для лучшего заполнения круга */
+            height: 100%;
+            object-fit: cover;
+            transform: translateY(15px) scale(1.1);
         }
         
         .section {
@@ -112,6 +110,7 @@
             justify-content: center;
             overflow: hidden; /* Обрезка выходящих за границы изображений */
             position: relative;
+            cursor: pointer;
         }
         
         /* Улучшенные стили для изображений в галерее */
@@ -125,7 +124,6 @@
         /* Добавляем эффект увеличения при наведении для лучшего просмотра */
         .gallery-item:hover img {
             transform: scale(1.1);
-            cursor: pointer;
         }
         
         /* Стили для модального окна с увеличенным изображением */
@@ -146,9 +144,11 @@
         
         .modal img {
             max-width: 90%;
-            max-height: 90%;
+            max-height: 90vh;
             margin: 20px auto;
             display: block;
+            border: 3px solid white;
+            border-radius: 5px;
         }
         
         .modal-close {
@@ -403,6 +403,12 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             z-index: 100;
             font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1);
         }
         
         /* Анимация пульсации для таймера возраста */
@@ -524,7 +530,13 @@
         </footer>
     </div>
     
-    <div class="music-control" id="music-control">
+    <!-- Аудиоплеер с музыкой - прямая ссылка на бесплатную музыку с Pixabay -->
+    <audio id="background-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/01/07/audio_7008d172c1.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+    
+    <div class="music-control" id="music-control" title="Включить/выключить музыку">
         🎵
     </div>
     
@@ -586,9 +598,32 @@
             createSpecialConfetti();
         });
         
-        // Музыкальный контроль (имитация)
-        document.getElementById('music-control').addEventListener('click', function() {
-            alert('Здесь могла бы играть праздничная мелодия!');
+        // Музыкальный контроль
+        const musicControl = document.getElementById('music-control');
+        const backgroundMusic = document.getElementById('background-music');
+        let isMusicPlaying = false;
+        
+        musicControl.addEventListener('click', function() {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+                musicControl.textContent = '🎵';
+                musicControl.style.backgroundColor = '#e91e63';
+                isMusicPlaying = false;
+            } else {
+                // Попытка воспроизведения после взаимодействия
+                backgroundMusic.volume = 0.5; // Уменьшаем громкость до половины
+                backgroundMusic.play()
+                    .then(() => {
+                        console.log('Музыка воспроизводится!');
+                        musicControl.textContent = '🔇';
+                        musicControl.style.backgroundColor = '#4caf50';
+                        isMusicPlaying = true;
+                    })
+                    .catch(e => {
+                        console.error('Ошибка воспроизведения:', e);
+                        alert('Не удалось включить музыку. Пожалуйста, повторите попытку.');
+                    });
+            }
         });
         
         // Функция для создания специальных конфетти
@@ -688,55 +723,4 @@
                 back.style.position = 'absolute';
                 back.style.width = '100%';
                 back.style.height = '100%';
-                back.style.backfaceVisibility = 'hidden';
-                back.style.transform = 'rotateY(180deg)';
-                back.style.display = 'flex';
-                back.style.alignItems = 'center';
-                back.style.justifyContent = 'center';
-                
-                card.addEventListener('click', flipCard);
-                memoryGame.appendChild(card);
-            });
-        }
-        
-        let hasFlippedCard = false;
-        let lockBoard = false;
-        let firstCard, secondCard;
-        let pairsFound = 0;
-        const totalPairs = 8;
-        
-        function flipCard() {
-            if (lockBoard) return;
-            if (this === firstCard) return;
-            
-            const inner = this.querySelector('.memory-card-inner');
-            inner.style.transform = 'rotateY(180deg)';
-            
-            if (!hasFlippedCard) {
-                // Первая карта
-                hasFlippedCard = true;
-                firstCard = this;
-                return;
-            }
-            
-            // Вторая карта
-            secondCard = this;
-            
-            checkForMatch();
-        }
-        
-        function checkForMatch() {
-            const isMatch = firstCard.dataset.value === secondCard.dataset.value;
-            
-            if (isMatch) {
-                disableCards();
-                pairsFound++;
-                
-                if (pairsFound === totalPairs) {
-                    setTimeout(() => {
-                        document.getElementById('congratulations').style.display = 'block';
-                        createSpecialConfetti();
-                    }, 1000);
-                }
-            } else {
-                unflip
+                back.style.backfaceVisibility = '
